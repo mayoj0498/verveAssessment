@@ -1,0 +1,8 @@
+# Server configuration
+HOST: :8443  # The address and port where the server will listen for incoming requests.
+READ_TIMEOUT: 10  # The maximum duration (in seconds) for reading the entire request.
+WRITE_TIMEOUT: 10  # The maximum duration (in seconds) for writing the response.
+
+# Kafka configuration
+KAFKA_SERVER: localhost:9092  # The address and port of the Kafka server to which messages will be sent.
+KAFKA_TOPIC: unique-id-counts  # The Kafka topic where unique ID counts will be published.
