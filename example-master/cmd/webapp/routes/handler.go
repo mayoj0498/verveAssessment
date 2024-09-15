@@ -11,7 +11,25 @@ import (
 	"golang.org/x/example/logging"
 )
 
-func AcceptHandler(w http.ResponseWriter, r *http.Request) {
+// Handler struct for your handlers
+type Handler struct{}
+
+// CorsMiddleware applies CORS settings
+func (h *Handler) CorsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+// AcceptGetHandler Handler
+func (h *Handler) AcceptGetHandler(w http.ResponseWriter, r *http.Request) {
 	// Record the start time of request processing
 	startTime := time.Now()
 

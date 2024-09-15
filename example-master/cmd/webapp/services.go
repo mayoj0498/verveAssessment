@@ -8,6 +8,8 @@ import (
 
 	"gopkg.in/yaml.v3"
 
+	"github.com/gorilla/mux"
+
 	"golang.org/x/example/cmd/webapp/routes"
 	"golang.org/x/example/logging"
 	"golang.org/x/example/model"
@@ -20,10 +22,6 @@ func startGoVerveService() error {
 	configs = setConfig()
 	logging.SetKafkaLoggingConfig(configs)
 	log.Println("Logging configuration set")
-
-	// Set up HTTP routes
-	routes.SetupRoutes()
-	log.Println("Routes have been set up")
 
 	// Start the HTTP server
 	if err := startServer(configs); err != nil {
@@ -60,8 +58,18 @@ func setConfig() model.Configs {
 
 // startServer initializes and starts the HTTP server with the given configuration
 func startServer(c model.Configs) error {
+	// Create a new mux router
+	router := mux.NewRouter()
+
+	// Set up HTTP routes
+	// Set up the routes
+	routes.SetupRoutes(router)
+
+	log.Println("Routes have been set up")
+
 	// Configure the HTTP server
 	server := &http.Server{
+		Handler:      router,
 		Addr:         c.Host,
 		ReadTimeout:  time.Duration(c.ReadTimeout) * time.Second,
 		WriteTimeout: time.Duration(c.WriteTimeout) * time.Second,
